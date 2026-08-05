@@ -1,0 +1,51 @@
+generated: '2026-08-04'
+method: probed
+source: https://oishii.com/api/ucp/mcp
+format: jsonrpc-2.0-error
+note: >-
+  Oishii publishes no error reference and no OpenAPI, so this catalog records only error envelopes that
+  were actually observed on the live endpoints, plus the one failure mode the published agent instructions
+  document. It is deliberately short — it is evidence, not a complete registry.
+envelope:
+  shape: '{"jsonrpc":"2.0","id":<id>,"error":{"code":<int>,"message":<string>,"data":{...}}}'
+  transport_status: HTTP status is set alongside the JSON-RPC error (422 observed for -32001)
+  problem_json: false
+problems:
+- status: 422
+  code: -32001
+  title: UCP discovery failed
+  detail: 'Unable to fetch agent profile: Missing profile uri'
+  data_code: invalid_profile_url
+  continue_url: https://oishii-berry.myshopify.com/
+  remediation: >-
+    Supply the calling agent's UCP profile URI (meta.ucp-agent.profile) so the merchant can resolve the
+    agent identity, or use the anonymous storefront MCP server at https://oishii.com/api/mcp for read-only
+    catalog and cart work.
+  observed_on: https://oishii.com/api/ucp/mcp
+  x-evidence:
+    fetched: '2026-08-04'
+    http_status: 422
+- status: 415
+  title: Unsupported media type
+  detail: Observed when POSTing to https://oishii.com/api/unstable/mcp (non-existent versioned MCP path).
+  remediation: Use the documented endpoints /api/mcp or /api/ucp/mcp.
+  observed_on: https://oishii.com/api/unstable/mcp
+  x-evidence:
+    fetched: '2026-08-04'
+    http_status: 415
+- status: 429
+  title: Rate limited
+  detail: >-
+    Documented in /agents.md and /llms.txt — "The MCP endpoint is rate-limited per IP. Back off on 429
+    responses." No numeric limit or reset header contract is published.
+  remediation: Back off and retry with exponential delay; no Retry-After contract is documented.
+  source: https://oishii.com/agents.md
+- status: 404
+  title: Not found
+  detail: >-
+    Returned as an HTML storefront 404 page (not JSON) for unknown paths, including
+    /.well-known/security.txt, /.well-known/api-catalog and /.well-known/agent-card.json.
+  observed_on: https://oishii.com/.well-known/security.txt
+  x-evidence:
+    fetched: '2026-08-04'
+    http_status: 404

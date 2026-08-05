@@ -1,0 +1,111 @@
+generated: '2026-08-04'
+method: searched
+source: https://oishii.com/agents.md
+note: >-
+  Cross-cutting request/response semantics for Oishii's agent-commerce surface, taken from the published
+  agent instructions (/agents.md, /llms.txt, robots.txt), the UCP merchant profile, and the live MCP tool
+  schemas. There is no REST OpenAPI; the contract is JSON-RPC over MCP plus Shopify's public storefront
+  JSON endpoints.
+transport:
+  protocol: JSON-RPC 2.0 over HTTP POST (MCP)
+  content_type: application/json
+  accept: application/json, text/event-stream
+  endpoints:
+  - https://oishii.com/api/mcp
+  - https://oishii.com/api/ucp/mcp
+authentication:
+  style: none for the storefront MCP server and storefront JSON feeds; UCP agent profile URI for the commerce endpoint; OAuth 2.0 / OIDC (Shopify customer accounts) for customer-scoped access
+  see: authentication/oishii-authentication.yml
+idempotency:
+  supported: false
+  detail: >-
+    No idempotency key header, parameter or retry contract is documented in /agents.md, /llms.txt or the
+    UCP merchant profile, and none of the five storefront MCP tool input schemas carries one. Cart mutation
+    is expressed as absolute state (update_items sets a quantity, quantity 0 removes a line) rather than as
+    a replayable delta, which limits but does not remove the risk of a duplicated add_items call.
+pagination:
+  style: opaque cursor
+  request_fields:
+  - catalog.pagination.cursor
+  - catalog.pagination.limit
+  default_page_size: 10
+  max_page_size: 250
+  response_fields:
+  - pagination.cursor
+  detail: >-
+    search_catalog returns a limited first page; the caller passes pagination.cursor from the response to
+    fetch the next page. Implementations may clamp limit below 250.
+localization:
+  request_fields:
+  - catalog.context.address_country
+  - catalog.context.address_region
+  - catalog.context.postal_code
+  - catalog.context.language
+  - catalog.context.currency
+  - country
+  - language
+  detail: >-
+    Agents are instructed to pass context.address_country and context.currency for accurate pricing and
+    availability. Country codes are ISO 3166-1 alpha-2, language tags IETF BCP 47 / ISO 639-1, currency
+    ISO 4217.
+money:
+  representation: integer minor units
+  detail: catalog.filters.price.min/max are expressed in ISO 4217 minor units (5000 = $50.00)
+identifiers:
+  style: Shopify global IDs (GID URIs)
+  examples:
+  - gid://shopify/Product/123
+  - gid://shopify/Cart/c1-<hash>?key=<key>
+abuse_signals:
+  request_fields:
+  - catalog.signals.dev.ucp.buyer_ip
+  - catalog.signals.dev.ucp.user_agent
+  detail: platform-provided environment data for authorization and abuse prevention
+rate_limiting:
+  documented: true
+  signal: HTTP 429
+  limits_published: false
+  detail: >-
+    "The MCP endpoint is rate-limited per IP. Back off on 429 responses." No numeric limit, window, or
+    RateLimit-* header contract is published.
+versioning:
+  scheme: dated protocol versions
+  ucp_current: '2026-04-08'
+  ucp_supported:
+  - '2026-04-08'
+  - '2026-01-23'
+  mcp_protocol_version: '2025-06-18'
+  see: lifecycle/oishii-lifecycle.yml
+errors:
+  envelope: JSON-RPC 2.0 error object (code, message, data)
+  see: errors/oishii-problem-types.yml
+human_in_the_loop:
+  required_for:
+  - checkout completion
+  - payment
+  detail: >-
+    Both /agents.md and robots.txt state that agents must not complete checkout, payment or order placement
+    without an explicit, contemporaneous human approval step, and direct buy-for-me agents to route payment
+    through the Shop skill (https://shop.app/SKILL.md) or the UCP payment handlers.
+read_only_surface:
+  detail: Anonymous, machine-readable storefront data that needs no MCP client
+  endpoints:
+  - path: /products.json
+    description: all published products with variants and prices
+  - path: /products/{handle}.json
+    description: single product
+  - path: /collections/{handle}/products.json
+    description: products in a collection
+  - path: /collections/all
+    description: HTML listing of all products
+  - path: /sitemap.xml
+    description: store sitemap
+x-evidence:
+  fetched: '2026-08-04'
+  probes:
+  - url: https://oishii.com/agents.md
+    http_status: 200
+  - url: https://oishii.com/products.json
+    http_status: 200
+  - url: https://oishii.com/api/mcp
+    http_status: 200

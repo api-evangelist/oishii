@@ -1,0 +1,124 @@
+generated: '2026-08-04'
+method: searched
+status: published
+source: https://oishii.com/agents.md
+note: >-
+  Two distinct MCP endpoints are served from oishii.com. The storefront MCP server at /api/mcp answers
+  an anonymous tools/list with five tools and complete JSON Schema input contracts (captured verbatim in
+  oishii-storefront-mcp-tools.json). The UCP commerce MCP endpoint at /api/ucp/mcp — the one advertised in
+  /agents.md, /llms.txt and /.well-known/ucp — is gated: an unauthenticated tools/list returns HTTP 422
+  with JSON-RPC error -32001 invalid_profile_url because UCP requires the calling agent to present an agent
+  profile URI. Both are provided by the Shopify platform (serverInfo name "storefront-renderer" version
+  0.1.0) and served from Oishii's own host.
+servers:
+- name: oishii-storefront-mcp
+  url: https://oishii.com/api/mcp
+  transport: http
+  protocol_version: '2025-06-18'
+  server_info:
+    name: storefront-renderer
+    version: 0.1.0
+  authentication: none
+  gated: false
+  capabilities:
+    tools: true
+    prompts: true
+    resources: true
+    logging: true
+  discovered:
+    tools: 5
+    prompts: 0
+    resources: 0
+  tools_file: oishii-storefront-mcp-tools.json
+  x-evidence:
+    fetched: '2026-08-04'
+    url: https://oishii.com/api/mcp
+    method: 'POST jsonrpc 2.0 tools/list'
+    http_status: 200
+- name: oishii-ucp-mcp
+  url: https://oishii.com/api/ucp/mcp
+  transport: http
+  authentication: ucp-agent-profile
+  gated: true
+  gate_detail: >-
+    HTTP 422, JSON-RPC error code -32001 "UCP discovery failed", data.code invalid_profile_url,
+    "Unable to fetch agent profile: Missing profile uri".
+  advertised_in:
+  - https://oishii.com/.well-known/ucp
+  - https://oishii.com/agents.md
+  - https://oishii.com/robots.txt
+  ucp_versions:
+  - '2026-04-08'
+  - '2026-01-23'
+  schema: https://ucp.dev/2026-04-08/services/shopping/mcp.openrpc.json
+  x-evidence:
+    fetched: '2026-08-04'
+    url: https://oishii.com/api/ucp/mcp
+    method: 'POST jsonrpc 2.0 tools/list'
+    http_status: 422
+tools:
+- name: search_catalog
+  server: oishii-storefront-mcp
+  description: >-
+    Search for products from the online store using natural language queries, filter criteria, or both.
+    At least one of query or filters must be provided. Results are cursor-paginated. Responses conform to
+    the UCP catalog search capability (dev.ucp.shopping.catalog.search).
+  input_schema: oishii-storefront-mcp-tools.json#/result/tools/0/inputSchema
+  parameters:
+  - catalog.query
+  - catalog.context.address_country
+  - catalog.context.address_region
+  - catalog.context.postal_code
+  - catalog.context.language
+  - catalog.context.currency
+  - catalog.context.intent
+  - catalog.filters.categories
+  - catalog.filters.price.min
+  - catalog.filters.price.max
+  - catalog.pagination.cursor
+  - catalog.pagination.limit
+  - meta.ucp-agent.profile
+- name: get_product_details
+  server: oishii-storefront-mcp
+  description: >-
+    Look up a product by ID (gid://shopify/Product/123), optionally selecting a specific variant via
+    options, with country/language localization.
+  input_schema: oishii-storefront-mcp-tools.json#/result/tools/4/inputSchema
+  required:
+  - product_id
+- name: get_cart
+  server: oishii-storefront-mcp
+  description: >-
+    Get the cart including items, shipping options, discount info, and checkout URL for a given cart id.
+  input_schema: oishii-storefront-mcp-tools.json#/result/tools/1/inputSchema
+  required:
+  - cart_id
+- name: update_cart
+  server: oishii-storefront-mcp
+  description: >-
+    Add, update, or remove cart line items and set buyer information, shipping details, discount codes and
+    notes. Creates a new cart when cart_id is omitted. Quantity 0 removes a line.
+  input_schema: oishii-storefront-mcp-tools.json#/result/tools/2/inputSchema
+- name: search_shop_policies_and_faqs
+  server: oishii-storefront-mcp
+  description: >-
+    Natural-language retrieval over the store's policies, products and services (shipping, refunds,
+    privacy, terms, FAQ).
+  input_schema: oishii-storefront-mcp-tools.json#/result/tools/3/inputSchema
+  required:
+  - query
+gated_tools:
+  server: oishii-ucp-mcp
+  note: >-
+    Names and flow order are published in /agents.md and /llms.txt; input schemas require an authenticated
+    UCP agent profile and were NOT observed. Do not treat these as verified contracts.
+  names:
+  - search_catalog
+  - create_cart
+  - create_checkout
+  - update_checkout
+  - complete_checkout
+rules:
+- Checkout requires contemporaneous human buyer approval; agents must not complete payment autonomously.
+- The MCP endpoint is rate limited per IP; back off on HTTP 429.
+- Pass context.address_country and context.currency for accurate pricing and availability.

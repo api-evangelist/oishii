@@ -1,0 +1,66 @@
+generated: '2026-08-04'
+method: searched
+host: https://oishii.com
+note: >-
+  Oishii's direct-to-consumer storefront runs on Shopify, and the Shopify platform serves a real
+  /.well-known/ discovery surface from the oishii.com host: a Universal Commerce Protocol (UCP) merchant
+  profile, plus OpenID Connect / OAuth 2.0 authorization-server and protected-resource metadata for the
+  Shopify customer-account identity provider. No RFC 9116 security.txt and no RFC 9727 api-catalog are
+  published on this host.
+documents:
+- path: /.well-known/ucp
+  description: Universal Commerce Protocol merchant profile (versions, services, capabilities, payment handlers)
+  status: 200
+  content_type: application/json
+  file: oishii-ucp.json
+- path: /.well-known/openid-configuration
+  description: OpenID Connect discovery for the Shopify customer-account issuer
+  status: 200
+  content_type: application/json
+  file: oishii-openid-configuration.json
+- path: /.well-known/oauth-authorization-server
+  description: RFC 8414 OAuth 2.0 authorization server metadata
+  status: 200
+  content_type: application/json
+  file: oishii-oauth-authorization-server.json
+- path: /.well-known/oauth-protected-resource
+  description: RFC 9728 OAuth 2.0 protected resource metadata (resource https://oishii.com)
+  status: 200
+  content_type: application/json
+  file: oishii-oauth-protected-resource.json
+- path: /.well-known/assetlinks.json
+  description: Android app-links digital asset links (platform-served)
+  status: 200
+  content_type: application/json
+- path: /.well-known/apple-app-site-association
+  description: Apple universal links association (platform-served)
+  status: 200
+  content_type: application/json
+- path: /.well-known/security.txt
+  status: 404
+- path: /.well-known/api-catalog
+  status: 404
+- path: /.well-known/ai-plugin.json
+  status: 404
+- path: /.well-known/agent-card.json
+  status: 404
+- path: /.well-known/agent.json
+  status: 404
+adjacent_agent_documents:
+- path: /llms.txt
+  status: 200
+  content_type: text/markdown
+  file: ../llms/oishii-llms.txt
+- path: /agents.md
+  status: 200
+  content_type: text/markdown
+  file: ../skills/oishii-agents.md
+- path: /robots.txt
+  status: 200
+  note: >-
+    Declares the agent posture inline — points agents at /agents.md, /.well-known/ucp and
+    /api/ucp/mcp, and explicitly forbids automated checkout completion without human approval.
+x-evidence:
+  fetched: '2026-08-04'
+  method: HTTP GET, no credentials
+  host: oishii.com

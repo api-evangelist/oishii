@@ -1,0 +1,35 @@
+generated: '2026-08-04'
+method: searched
+note: >-
+  Oishii publishes its own agent instruction document at https://oishii.com/agents.md (mirrored at
+  /llms.txt and referenced from robots.txt). It is saved here verbatim as the provider-authored skill.
+  The second file is an API Evangelist packaged skill grounded entirely in the tool names and JSON Schema
+  parameters returned by a live tools/list against https://oishii.com/api/mcp — no operation is invented.
+skills:
+- file: oishii-agents.md
+  name: Oishii agent instructions (provider published)
+  method: searched
+  source: https://oishii.com/agents.md
+  api: mcp/oishii-mcp.yml
+  operations:
+  - search_catalog
+  - create_cart
+  - create_checkout
+  - update_checkout
+  - complete_checkout
+  x-evidence:
+    fetched: '2026-08-04'
+    url: https://oishii.com/agents.md
+    http_status: 200
+    content_type: text/markdown
+- file: oishii-storefront-shopping.md
+  name: Shop the Oishii storefront via MCP
+  method: generated
+  source: mcp/oishii-storefront-mcp-tools.json
+  api: mcp/oishii-mcp.yml
+  operations:
+  - search_catalog
+  - get_product_details
+  - update_cart
+  - get_cart
+  - search_shop_policies_and_faqs

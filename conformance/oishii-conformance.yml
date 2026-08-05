@@ -1,0 +1,82 @@
+generated: '2026-08-04'
+method: searched
+source: https://oishii.com/.well-known/ucp
+note: >-
+  Standards conformance observed live on the oishii.com host. Oishii itself publishes no compliance
+  program or certification list; every standard below is satisfied by the Shopify platform serving Oishii's
+  storefront, and is recorded because the artifact is genuinely served from Oishii's own domain.
+standards:
+- id: ucp-2026-04-08
+  name: Universal Commerce Protocol 2026-04-08
+  conforms: true
+  evidence: /.well-known/ucp advertises version 2026-04-08 (and 2026-01-23) with dev.ucp.shopping services and capabilities
+  spec: https://ucp.dev/2026-04-08/specification/overview/
+- id: mcp
+  name: Model Context Protocol
+  conforms: true
+  evidence: POST https://oishii.com/api/mcp initialize returns protocolVersion 2025-06-18 with tools/prompts/resources/logging capabilities
+- id: jsonrpc-2.0
+  name: JSON-RPC 2.0
+  conforms: true
+  evidence: both MCP endpoints answer with jsonrpc 2.0 envelopes, including the -32001 error object from /api/ucp/mcp
+- id: json-schema-2020-12
+  name: JSON Schema draft 2020-12
+  conforms: true
+  evidence: every tool inputSchema in mcp/oishii-storefront-mcp-tools.json declares $schema https://json-schema.org/draft/2020-12/schema
+- id: openid-connect-discovery
+  name: OpenID Connect Discovery 1.0
+  conforms: true
+  evidence: /.well-known/openid-configuration returns issuer, jwks_uri, claims_supported, id_token_signing_alg_values_supported RS256
+- id: rfc8414-oauth-authorization-server-metadata
+  name: RFC 8414 OAuth 2.0 Authorization Server Metadata
+  conforms: true
+  evidence: /.well-known/oauth-authorization-server returns 200 with issuer, token_endpoint, scopes_supported
+- id: rfc9728-oauth-protected-resource-metadata
+  name: RFC 9728 OAuth 2.0 Protected Resource Metadata
+  conforms: true
+  evidence: /.well-known/oauth-protected-resource declares resource https://oishii.com and its authorization server
+- id: rfc7636-pkce
+  name: RFC 7636 PKCE
+  conforms: true
+  evidence: code_challenge_methods_supported includes S256
+- id: llmstxt
+  name: llms.txt
+  conforms: true
+  evidence: https://oishii.com/llms.txt returns 200 text/markdown, mirroring /agents.md
+- id: agents-md
+  name: AGENTS.md / agents.md agent instructions
+  conforms: true
+  evidence: https://oishii.com/agents.md returns 200 text/markdown and is referenced from robots.txt
+- id: rfc9116-security-txt
+  name: RFC 9116 security.txt
+  conforms: false
+  evidence: https://oishii.com/.well-known/security.txt returns 404
+- id: rfc9727-api-catalog
+  name: RFC 9727 /.well-known/api-catalog
+  conforms: false
+  evidence: https://oishii.com/.well-known/api-catalog returns 404
+- id: a2a
+  name: A2A Agent Card
+  conforms: false
+  evidence: /.well-known/agent-card.json and /.well-known/agent.json both return 404 on oishii.com and oishii-berry.myshopify.com
+- id: openapi
+  name: OpenAPI
+  conforms: false
+  evidence: no OpenAPI document is served on oishii.com; /openapi.json, /api-docs and the api./docs./developer. subdomains do not resolve or 404
+- id: asyncapi
+  name: AsyncAPI
+  conforms: false
+  evidence: no event, streaming or webhook surface is published for the Oishii storefront
+- id: rfc9457-problem-details
+  name: RFC 9457 Problem Details
+  conforms: false
+  evidence: errors are JSON-RPC error objects, not application/problem+json
+x-evidence:
+  fetched: '2026-08-04'
+  probes:
+  - url: https://oishii.com/.well-known/ucp
+    http_status: 200
+  - url: https://oishii.com/api/mcp
+    http_status: 200
+  - url: https://oishii.com/.well-known/security.txt
+    http_status: 404

@@ -1,23 +1,129 @@
 aid: oishii
 name: Oishii
-description: 'Oishii is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: >-
+  Oishii is a US vertical-farming company founded in 2016 and headquartered in Jersey City, New Jersey, that grows
+  pesticide-free Japanese strawberry varieties — the Omakase Berry and Koyo Berry — plus the Rubi Tomato inside
+  robot-assisted, bee-pollinated indoor "Smart Farms" in New Jersey, and sells them direct-to-consumer and through
+  grocery retail across the United States and Canada. Oishii publishes no traditional developer program, but its
+  direct-to-consumer storefront at oishii.com runs on Shopify and therefore exposes a real, anonymous, machine-readable
+  agent-commerce surface: an /agents.md and /llms.txt agent instruction document, a Universal Commerce Protocol (UCP)
+  merchant profile at /.well-known/ucp, OAuth 2.0 and OpenID Connect discovery documents, a live storefront MCP server
+  at /api/mcp exposing catalog search, cart, product-detail and policy-lookup tools, and a UCP checkout MCP endpoint at
+  /api/ucp/mcp that is gated behind an agent profile URI.
+image: https://oishii.com/cdn/shop/files/OishiiOGImage_24043e78-29c0-4975-8026-ea0399740ae4.jpg?v=1655908654
 url: https://raw.githubusercontent.com/api-evangelist/oishii/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
-specificationVersion: '0.20'
+x-platform: Shopify
+specificationVersion: '0.21'
 created: '2026-08-04'
 modified: '2026-08-04'
 tags:
 - Company
-apis: []
+- Agriculture
+- Vertical Farming
+- Food and Beverage
+- Consumer Products
+- Ecommerce
+- Retail
+- Agent Commerce
+- Shopify
+- MCP
+- Universal Commerce Protocol
+apis:
+- name: Oishii Storefront MCP Server
+  description: >-
+    Anonymous, live Model Context Protocol server for the Oishii storefront, served from oishii.com and provided by the
+    Shopify storefront-renderer platform. A tools/list call returns five tools with full JSON Schema input contracts:
+    search_catalog (natural-language and filtered product search with cursor pagination), get_product_details,
+    get_cart, update_cart, and search_shop_policies_and_faqs. Responses conform to the UCP catalog capabilities
+    (dev.ucp.shopping.catalog.search / dev.ucp.shopping.catalog.lookup). No authentication is required for tools/list.
+  humanURL: https://oishii.com/agents.md
+  baseURL: https://oishii.com/api/mcp
+  tags:
+  - MCP
+  - Agent Commerce
+  - Ecommerce
+  - Catalog
+  - Shopify
+  properties:
+  - type: MCPServer
+    url: mcp/oishii-mcp.yml
+  - type: Documentation
+    url: https://oishii.com/agents.md
+  - type: LLMsTxt
+    url: llms/oishii-llms.txt
+- name: Oishii UCP Agentic Commerce Endpoint
+  description: >-
+    Universal Commerce Protocol (UCP) endpoint for agent-driven purchasing from the Oishii store, advertised in the
+    merchant profile at https://oishii.com/.well-known/ucp with supported protocol versions 2026-04-08 and 2026-01-23.
+    It declares the cart, checkout, fulfillment, discount, order and catalog capabilities, plus Google Pay and Shopify
+    card payment handlers. The MCP transport at /api/ucp/mcp is gated: an unauthenticated tools/list returns HTTP 422
+    with JSON-RPC error -32001 invalid_profile_url, because UCP requires the calling agent to present a profile URI.
+    Checkout completion requires contemporaneous human buyer approval.
+  humanURL: https://oishii.com/.well-known/ucp
+  baseURL: https://oishii.com/api/ucp/mcp
+  tags:
+  - Universal Commerce Protocol
+  - Agent Commerce
+  - Checkout
+  - Payments
+  - MCP
+  properties:
+  - type: Documentation
+    url: https://oishii.com/agents.md
+  - type: WellKnown
+    url: well-known/oishii-well-known.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: DomainSecurity
+  url: security/oishii-domain-security.yml
 - type: Website
+  url: https://oishii.com/
+- type: SecondaryMarket
   url: https://forgeglobal.com/oishii_stock/
+- type: Documentation
+  url: https://oishii.com/agents.md
+- type: Support
+  url: https://oishii.com/pages/contact
+- type: HelpCenter
+  url: https://oishii.com/pages/faq
+- type: Blog
+  url: https://oishii.com/blogs/news
+- type: SignUp
+  url: https://oishii.com/account/login
+- type: TermsOfService
+  url: https://oishii.com/policies/terms-of-service
+- type: PrivacyPolicy
+  url: https://oishii.com/policies/privacy-policy
+- type: LLMsTxt
+  url: llms/oishii-llms.txt
+- type: WellKnown
+  url: well-known/oishii-well-known.yml
+- type: MCPServer
+  url: mcp/oishii-mcp.yml
+- type: Authentication
+  url: authentication/oishii-authentication.yml
+- type: OAuthScopes
+  url: scopes/oishii-scopes.yml
+- type: Conformance
+  url: conformance/oishii-conformance.yml
+- type: Conventions
+  url: conventions/oishii-conventions.yml
+- type: ErrorCatalog
+  url: errors/oishii-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/oishii-lifecycle.yml
+- type: DataModel
+  url: data-model/oishii-data-model.yml
+- type: AgentSkill
+  url: skills/_index.yml
+x-enrichment:
+  date: '2026-08-04'
+  status: enriched
+  artifacts_added: 19
+  pass: local-v1

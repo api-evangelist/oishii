@@ -1,0 +1,49 @@
+generated: '2026-08-04'
+method: searched
+source: https://oishii.com/.well-known/ucp
+note: >-
+  Oishii operates no developer program, so there is no versioning policy, deprecation policy, SLA, status
+  page or changelog of its own. What versioning exists is the dated protocol versioning of the Universal
+  Commerce Protocol and MCP surfaces served on its host — recorded here because a consuming agent has to
+  pin against it.
+versioning:
+  scheme: dated protocol version
+  current: '2026-04-08'
+  supported:
+  - version: '2026-04-08'
+    label: latest stable
+    profile: https://oishii-berry.myshopify.com/.well-known/ucp/2026-04-08
+  - version: '2026-01-23'
+    profile: https://oishii-berry.myshopify.com/.well-known/ucp/2026-01-23
+  mcp_protocol_version: '2025-06-18'
+  negotiation: >-
+    Version-specific merchant profiles are addressable at /.well-known/ucp/{version}; the unversioned
+    /.well-known/ucp returns the current version plus the supported_versions map.
+  docs: https://ucp.dev/2026-04-08/specification/overview/
+deprecation:
+  policy_url: null
+  sunset_header: false
+  detail: >-
+    No deprecation policy, Sunset/Deprecation header support (RFC 8594), or end-of-life notice is published
+    for either MCP endpoint. Superseded UCP versions remain individually addressable but carry no announced
+    removal date.
+sla:
+  url: null
+  uptime_target: null
+status_page:
+  url: null
+  detail: >-
+    Oishii publishes no status page. The storefront runs on Shopify, whose platform status page
+    (https://www.shopifystatus.com/) covers the underlying infrastructure but is not an Oishii artifact and
+    is therefore not wired as a StatusPage pointer.
+changelog:
+  url: null
+  detail: No dated changelog or release notes are published for the agent surface.
+deprecated_operations: []
+x-evidence:
+  fetched: '2026-08-04'
+  probes:
+  - url: https://oishii.com/.well-known/ucp
+    http_status: 200
+  - url: https://oishii.com/api/mcp
+    http_status: 200

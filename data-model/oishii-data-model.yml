@@ -1,0 +1,122 @@
+generated: '2026-08-04'
+method: derived
+source: mcp/oishii-storefront-mcp-tools.json
+also_from: https://oishii.com/products.json
+note: >-
+  Derived from the live MCP tool input schemas and the anonymous storefront product feed — there is no
+  OpenAPI to read $refs from. Only entities and fields that appear in one of those two real artifacts are
+  listed; nothing is inferred from the Shopify platform generally.
+identifiers:
+  style: Shopify global ID (GID URI)
+  patterns:
+  - entity: product
+    example: gid://shopify/Product/123
+  - entity: cart
+    example: gid://shopify/Cart/c1-<hash>?key=<key>
+entities:
+- name: product
+  description: A published storefront product (e.g. The Omakase Berry (Connoisseur Grade), Strawberry Yuzu Preserves).
+  source_fields:
+  - id
+  - title
+  - handle
+  - product_type
+  - tags
+  - variants
+  - images
+  read_via:
+  - get_product_details
+  - search_catalog
+  - GET /products.json
+  - GET /products/{handle}.json
+- name: product_variant
+  description: A purchasable variant of a product, selected by option values; carries price and availability.
+  source_fields:
+  - id
+  - title
+  - price
+  - available
+  - options
+  read_via:
+  - get_product_details
+  - GET /products.json
+- name: collection
+  description: A merchandised grouping of products.
+  read_via:
+  - GET /collections/{handle}/products.json
+  - GET /collections/all
+- name: cart
+  description: A buyer's in-progress cart, including line items, shipping options, discount info and a checkout URL.
+  source_fields:
+  - cart_id
+  - line_items
+  - buyer_identity
+  - delivery
+  - discount_codes
+  - note
+  - checkout_url
+  read_via:
+  - get_cart
+  written_via:
+  - update_cart
+- name: cart_line_item
+  description: A quantity of one product variant within a cart.
+  source_fields:
+  - id
+  - product_variant_id
+  - quantity
+- name: buyer_identity
+  description: Buyer contact and delivery information attached to a cart.
+- name: checkout
+  description: The UCP checkout resource; created and completed through the gated /api/ucp/mcp endpoint.
+  capability: dev.ucp.shopping.checkout
+  observed: false
+- name: order
+  description: The UCP order resource resulting from a completed checkout.
+  capability: dev.ucp.shopping.order
+  observed: false
+- name: shop_policy
+  description: Store policy and FAQ documents (privacy, terms, refund, shipping) retrievable in natural language.
+  read_via:
+  - search_shop_policies_and_faqs
+  - GET /policies/{handle}
+relationships:
+- from: product
+  to: product_variant
+  type: has_many
+  via: variants
+- from: product_variant
+  to: product
+  type: belongs_to
+  via: product_id
+- from: collection
+  to: product
+  type: has_many
+  via: products
+- from: cart
+  to: cart_line_item
+  type: has_many
+  via: add_items / update_items / remove_line_ids
+- from: cart_line_item
+  to: product_variant
+  type: belongs_to
+  via: product_variant_id
+- from: cart
+  to: buyer_identity
+  type: has_one
+  via: buyer_identity
+- from: cart
+  to: checkout
+  type: has_one
+  via: checkout_url
+- from: checkout
+  to: order
+  type: has_one
+  via: complete_checkout
+catalog_snapshot:
+  fetched: '2026-08-04'
+  source: https://oishii.com/products.json
+  product_count: 6
+  product_types:
+  - Connoisseur Berries
+  - Premium Preserves

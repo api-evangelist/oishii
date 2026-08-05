@@ -1,0 +1,43 @@
+generated: '2026-08-04'
+method: searched
+source: https://oishii.com/.well-known/oauth-authorization-server
+docs: https://oishii.com/.well-known/openid-configuration
+note: >-
+  Scopes are declared by the Shopify customer-account authorization server that oishii.com delegates
+  identity to. Oishii publishes no OpenAPI, so these are read verbatim from the RFC 8414 / OIDC discovery
+  documents served on the oishii.com host — not derived from a spec. The two customer-account scopes are
+  coarse-grained (":full"); there is no per-resource scope surface.
+schemes:
+- name: shopify-customer-account
+  source: well-known/oishii-oauth-authorization-server.json
+  issuer: https://shopify.com/authentication/26346881082
+  flows:
+  - flow: authorizationCode
+    authorizationUrl: https://shopify.com/authentication/26346881082/oauth/authorize
+    tokenUrl: https://shopify.com/authentication/26346881082/oauth/token
+    pkce: S256
+  - flow: refreshToken
+    tokenUrl: https://shopify.com/authentication/26346881082/oauth/token
+  - flow: urn:ietf:params:oauth:grant-type:jwt-bearer
+    tokenUrl: https://shopify.com/authentication/26346881082/oauth/token
+scopes:
+- scope: openid
+  description: OpenID Connect authentication; issue an ID token for the signed-in customer.
+  flows: [authorizationCode]
+  sources: [well-known/oishii-openid-configuration.json]
+- scope: email
+  description: Release the customer's email address and email_verified claim.
+  flows: [authorizationCode]
+  sources: [well-known/oishii-openid-configuration.json]
+- scope: customer-account-api:full
+  description: Full access to the Shopify Customer Account API on behalf of the signed-in customer (orders, addresses, profile).
+  flows: [authorizationCode]
+  sources: [well-known/oishii-oauth-authorization-server.json]
+- scope: customer-account-mcp-api:full
+  description: Full access to the customer-account MCP API on behalf of the signed-in customer — the authenticated agent surface complementing the anonymous storefront MCP server.
+  flows: [authorizationCode]
+  sources: [well-known/oishii-oauth-authorization-server.json]
+x-evidence:
+  fetched: '2026-08-04'
+  url: https://oishii.com/.well-known/oauth-authorization-server
+  http_status: 200
