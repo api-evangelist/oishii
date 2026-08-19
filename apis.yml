@@ -15,7 +15,7 @@ url: https://raw.githubusercontent.com/api-evangelist/oishii/refs/heads/main/api
 x-type: company
 x-source: harvest:secondary-market
 x-platform: Shopify
-specificationVersion: '0.21'
+specificationVersion: '0.23'
 created: '2026-08-04'
 modified: '2026-08-04'
 tags:
