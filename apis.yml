@@ -24,6 +24,18 @@ tags:
 - Vertical Farming
 - Food and Beverage
 - Consumer Products
+- E-Commerce
+- Retail
+- Agent Commerce
+- Shopify
+- MCP
+- Universal Commerce Protocol
+tags_raw:
+- Company
+- Agriculture
+- Vertical Farming
+- Food and Beverage
+- Consumer Products
 - Ecommerce
 - Retail
 - Agent Commerce
@@ -41,6 +53,12 @@ apis:
   humanURL: https://oishii.com/agents.md
   baseURL: https://oishii.com/api/mcp
   tags:
+  - MCP
+  - Agent Commerce
+  - E-Commerce
+  - Catalog
+  - Shopify
+  tags_raw:
   - MCP
   - Agent Commerce
   - Ecommerce
