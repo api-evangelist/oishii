@@ -10,6 +10,17 @@ description: >-
   merchant profile at /.well-known/ucp, OAuth 2.0 and OpenID Connect discovery documents, a live storefront MCP server
   at /api/mcp exposing catalog search, cart, product-detail and policy-lookup tools, and a UCP checkout MCP endpoint at
   /api/ucp/mcp that is gated behind an agent profile URI.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: false
+  label: Hosted service · you call their endpoint
+  confidence: medium
+  source:
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 image: https://oishii.com/cdn/shop/files/OishiiOGImage_24043e78-29c0-4975-8026-ea0399740ae4.jpg?v=1655908654
 url: https://raw.githubusercontent.com/api-evangelist/oishii/refs/heads/main/apis.yml
 x-type: company
