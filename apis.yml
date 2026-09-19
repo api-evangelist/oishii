@@ -51,7 +51,7 @@ tags:
 - Consumer Products
 - E-Commerce
 - Retail
-- Agent Commerce
+- Agentic Commerce
 - Shopify
 - MCP
 - Universal Commerce Protocol
@@ -79,7 +79,7 @@ apis:
   baseURL: https://oishii.com/api/mcp
   tags:
   - MCP
-  - Agent Commerce
+  - Agentic Commerce
   - E-Commerce
   - Catalog
   - Shopify
@@ -107,6 +107,12 @@ apis:
   humanURL: https://oishii.com/.well-known/ucp
   baseURL: https://oishii.com/api/ucp/mcp
   tags:
+  - Universal Commerce Protocol
+  - Agentic Commerce
+  - Checkout
+  - Payments
+  - MCP
+  tags_raw:
   - Universal Commerce Protocol
   - Agent Commerce
   - Checkout
