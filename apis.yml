@@ -96,6 +96,9 @@ apis:
     url: https://oishii.com/agents.md
   - type: LLMsTxt
     url: llms/oishii-llms.txt
+  x-surface: platform-generated
+  x-platform: shopify
+  x-platform-surface: storefront-mcp
 - name: Oishii UCP Agentic Commerce Endpoint
   description: >-
     Universal Commerce Protocol (UCP) endpoint for agent-driven purchasing from the Oishii store, advertised in the
@@ -123,6 +126,9 @@ apis:
     url: https://oishii.com/agents.md
   - type: WellKnown
     url: well-known/oishii-well-known.yml
+  x-surface: platform-generated
+  x-platform: shopify
+  x-platform-surface: ucp
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
