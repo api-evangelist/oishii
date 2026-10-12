@@ -1,0 +1,16 @@
+generated: '2026-10-12'
+method: none
+source:
+- https://zapier.com/apps/oishii/integrations
+- https://n8n.io/integrations/oishii/
+- https://composio.dev/toolkits/oishii
+- https://monid.ai/tools/oishii
+checked:
+- https://composio.dev/toolkits/oishii
+- https://monid.ai/tools/oishii
+- https://n8n.io/integrations/oishii/
+- https://zapier.com/apps/oishii/integrations
+summary: null
+marketplace_apps: []
+edges: []
+templates: []
